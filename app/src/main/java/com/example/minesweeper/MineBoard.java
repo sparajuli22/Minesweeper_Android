@@ -2,13 +2,15 @@ package com.example.minesweeper;
 
 import java.util.Random;
 
-public class MineBoard {
+public class MineBoard 
+{
+    // array of mineboards
     Square[][] mineBoard;
     int row;
     int column;
     int mines;
     int noOfClicks;
-
+    // constructor function
     public MineBoard(int row, int column, int mines){
 
         this.row = row;
@@ -23,6 +25,7 @@ public class MineBoard {
 
     }
 
+    // randomly palces the mines in the cells
     public void placeMines(int frow, int fcol){
         for(int i =0; i < mines; i++) {
             Random rand = new Random();
@@ -35,9 +38,11 @@ public class MineBoard {
                 i--;
             }
         }
+        // checks if all the cells have mines or a bomb
         checkAllSquares();
 
     }
+
 
     public boolean isValidSquare(int row, int column){
         if (row < 0 || column < 0){
@@ -50,10 +55,14 @@ public class MineBoard {
     }
 
     public void checkMines(int row, int column){
-        if (mineBoard[row][column].hasMine()){
+        // this adds the mines or the bomb until there is no mine woth either one left
+        if (mineBoard[row][column].hasMine())
+        {
             mineBoard[row][column].addMine();
         }
-        else{
+        else
+        // if there are no mines left 
+        {
             int count = 0;
             for (int i = row - 1; i <= row + 1; i++){
                 for (int j = column - 1; j <= column + 1; j++){
@@ -68,11 +77,15 @@ public class MineBoard {
         }
     }
 
+    // reveals a cell has a mine or a bimb based on the click
     public void revealMine(int row, int column){
         mineBoard[row][column].reveal();
     }
 
-    public void checkAllSquares() {
+   
+    // check all the cells of they have a mine
+    public void checkAllSquares() 
+    {
         for (int i = 0; i < row; i++){
             for (int j = 0; j < column; j++){
                 checkMines(i,j);
@@ -80,15 +93,16 @@ public class MineBoard {
             }
         }
     }
-
+    
+    // flag the mine with bomb
     public void flagMine(int row, int column){
         mineBoard[row][column].flag();
     }
-
+    // deflag the mine 
     public void deFlagMine(int row, int column){
         mineBoard[row][column].deFlag();
     }
-
+    
     public Square[][] getBoard(){
         return mineBoard;
     }
@@ -103,7 +117,7 @@ public class MineBoard {
         }
     }
 
-
+    // hides all the mineboard if the game is over
     public void hideAll() {
         for (int i = 0; i < row; i++){
             for (int j = 0; j < column; j++) {
