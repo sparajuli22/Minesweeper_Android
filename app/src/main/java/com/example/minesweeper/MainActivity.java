@@ -1,3 +1,8 @@
+// Created By : Ayush Bharati & Satish Parajuli
+// Minesweeper (CS 372 Final Project)
+
+
+
 package com.example.minesweeper;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,28 +22,35 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    // number of columns, rows and mines for the main application
     int _rows = 9;
     int _columns = 9;
     int _mines = 12;
-    Button[][] buttons = new Button[_rows][_columns];
-    MineBoard board = new MineBoard(_rows,_columns,_mines);
-    Button restart;
+    
+    Button[][] buttons = new Button[_rows][_columns]; // a 2D array for the number of rows and columns
+    MineBoard board = new MineBoard(_rows,_columns,_mines); // a mineBoard
+    Button restart; 
     boolean gameOver;
-    int squaresLeft = _rows * _columns - _mines;
+    int squaresLeft = _rows * _columns - _mines; // the nuber of squares left for the mines
 
-    TableLayout boardViewer;
+    TableLayout boardViewer; 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupBoard();
-
+        // have restart button
         restart = (Button)findViewById(R.id.restart);
-        restart.setOnClickListener(new View.OnClickListener() {
+        
+        restart.setOnClickListener(new View.OnClickListener() // makes the button clickable
+        { 
             @Override
             public void onClick(View view) {
+                // if the game restarts, this resets to a new board
                 boardViewer.removeAllViews();
+                // have a new mineBoard
                 board = new MineBoard(_rows,_columns, _mines);
+                // sets up a new mineboard
                 setupBoard();
                 squaresLeft = _rows * _columns - _mines;
                 board.hideAll();
@@ -49,20 +61,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupBoard(){
+
+        
         boardViewer = (TableLayout)findViewById(R.id.MineField);
         gameOver = false;
 
         TextView t = (TextView)findViewById(R.id.Header);
+
         t.setText("New Game");
+        // makes the number of rows till i
         for (int i = 0; i < _rows; i++){
             TableRow newRow = new TableRow(this);
             TableLayout.LayoutParams y = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 0);
             y.weight = 1;
             newRow.setLayoutParams(y);
+            // makes the colums till j
             for (int j = 0; j < _columns; j++){
+            
                 buttons[i][j] = new Button(this);
                 TableRow.LayoutParams x = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
                 x.weight = 1;
+                // sets out the parameters
                 buttons[i][j].setLayoutParams(x);
                 buttons[i][j].setText(" ");
                 buttons[i][j].setTypeface(Typeface.DEFAULT_BOLD);
@@ -74,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
                 buttons[i][j].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (squaresLeft == _rows * _columns - _mines){
+                        if (squaresLeft == _rows * _columns - _mines)
+                        {
                             board.placeMines(finalRow, finalColumn);
                         }
                         reveal(finalRow, finalColumn);
