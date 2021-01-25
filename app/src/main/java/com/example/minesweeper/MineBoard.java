@@ -28,7 +28,7 @@ public class MineBoard {
             Random rand = new Random();
             int rm = rand.nextInt(row);
             int cm = rand.nextInt(column);
-            if (!(mineBoard[rm][cm].hasMine() || (rm >= frow - 1 && rm <= frow + 1 ) || (cm >= fcol && cm <= fcol ))) {
+            if (!(mineBoard[rm][cm].hasMine() || ((rm >= frow - 1 && rm <= frow + 1 ) && (cm >= fcol - 1 && cm <= fcol + 1)))) {
                 mineBoard[rm][cm].addMine();
             }
             else{

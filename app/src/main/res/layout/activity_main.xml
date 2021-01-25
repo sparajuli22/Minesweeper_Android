@@ -16,13 +16,28 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/Header"
+            android:id="@+id/square"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Squares left 10     "
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="#090909"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="     " />
+
+        <TextView
+            android:id="@+id/flag"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Flags Left: 10"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="#090909"
-            android:textSize="40sp" />
+            android:textSize="24sp" />
     </TableRow>
 
     <TableLayout

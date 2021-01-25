@@ -19,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
     int _rows = 9;
     int _columns = 9;
-    int _mines = 12;
+    int _mines =  5;
+    int _flags = 0;
     Button[][] buttons = new Button[_rows][_columns];
     MineBoard board = new MineBoard(_rows,_columns,_mines);
     Button restart;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 board = new MineBoard(_rows,_columns, _mines);
                 setupBoard();
                 squaresLeft = _rows * _columns - _mines;
+                _flags = 0;
                 board.hideAll();
             }
         });
@@ -52,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
         boardViewer = (TableLayout)findViewById(R.id.MineField);
         gameOver = false;
 
-        TextView t = (TextView)findViewById(R.id.Header);
-        t.setText("New Game");
+        TextView t = (TextView) findViewById(R.id.square);
+        t.setText(String.format("%d Squares left", squaresLeft));
+        TextView f = (TextView) findViewById(R.id.flag);
+        f.setText(String.format("%d Flags left", _mines - _flags));
         for (int i = 0; i < _rows; i++){
             TableRow newRow = new TableRow(this);
             TableLayout.LayoutParams y = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 0);
@@ -76,17 +80,49 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         if (squaresLeft == _rows * _columns - _mines){
                             board.placeMines(finalRow, finalColumn);
+                            TextView f = (TextView) findViewById(R.id.flag);
+                            f.setText(String.format("%d Flags left", _mines - _flags));
                         }
                         reveal(finalRow, finalColumn);
                         endIfMine(finalRow, finalColumn);
                         checkIfWon();
                     }
                 });
+
+                buttons[i][j].setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        checkFlag(finalRow, finalColumn);
+                        return true;
+                    }
+
+                });
                 newRow.addView(buttons[i][j]);
             }
             boardViewer.addView(newRow);
         }
     }
+
+    private void checkFlag(int row, int column) {
+        if (!board.getBoard()[row][column].isFlagged) {
+            if (_flags < _mines) {
+                board.flagMine(row, column);
+                buttons[row][column].setBackgroundResource(R.drawable.flag);
+                _flags++;
+                TextView f = (TextView) findViewById(R.id.flag);
+                f.setText(String.format("%d Flags left", _mines - _flags));
+
+            }
+        } else {
+            board.deFlagMine(row, column);
+            buttons[row][column].setBackgroundResource(R.drawable.squarebtn);
+            _flags--;
+            TextView f = (TextView) findViewById(R.id.flag);
+            f.setText(String.format("%d Flags left", _mines - _flags));
+        }
+    }
+
+
 
     private void reveal(int row, int column) {
         if ((row < 0 || column < 0 || row >= 9|| column >= 9)) {
@@ -117,18 +153,20 @@ public class MainActivity extends AppCompatActivity {
             buttons[row][column].setBackgroundResource(R.drawable.pressedbtn);
             buttons[row][column].setText(str);
             squaresLeft--;
-            TextView t = (TextView) findViewById(R.id.Header);
+            TextView t = (TextView) findViewById(R.id.square);
             t.setText(String.format("%d Squares left", squaresLeft));
 
 
             if (squareValue == 0) {
                 reveal(row + 1, column);
-                reveal(row, column + 1);
+                reveal(row + 1, column - 1);
                 reveal(row + 1, column + 1);
-                reveal(row - 1, column + 1);
+                reveal(row, column + 1);
                 reveal(row , column - 1);
+                reveal(row - 1, column + 1);
                 reveal(row - 1, column - 1);
                 reveal(row -1, column);
+
 
             } else {
                 return;
@@ -138,8 +176,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkIfWon(){
         if (squaresLeft == 0){
-            TextView t = (TextView) findViewById(R.id.Header);
-            t.setText(String.format("You won !!!!!!"));
+
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    if(board.getBoard()[i][j].hasMine()){
+                        buttons[i][j].setBackgroundResource(R.drawable.flag);
+                        buttons[i][j].setEnabled(false);
+                    }
+                }
+            }
+
+            TextView t = (TextView) findViewById(R.id.square);
+            t.setText(String.format("You won"));
+
+            TextView f = (TextView) findViewById(R.id.flag);
+            f.setText(String.format("!!!!!!"));
         }
     }
 
@@ -159,8 +210,11 @@ public class MainActivity extends AppCompatActivity {
                     buttons[i][j].setEnabled(false);
                 }
             }
-            TextView t = (TextView)findViewById(R.id.Header);
-            t.setText("Game Over");
+            TextView t = (TextView) findViewById(R.id.square);
+            t.setText(String.format("Game"));
+
+            TextView f = (TextView) findViewById(R.id.flag);
+            f.setText(String.format("Over"));
         }
 
 
